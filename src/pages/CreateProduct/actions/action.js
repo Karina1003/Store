@@ -17,6 +17,11 @@ const getProduct = (id) => {
         return response;
 };
 
+const saveProduct = (name, description, categoryId) => (dispatch) => {
+    return fetch(`http://localhost:8080/product/create?name=${name}&description=${description}&categoryId=${categoryId}`, 
+                            {method: "POST"});
+};
+
 const fetchProduct = (id) => (dispatch) => {
     dispatch(requestProduct());
     return getProduct(id)
@@ -25,4 +30,4 @@ const fetchProduct = (id) => (dispatch) => {
     .catch(product => dispatch(errorReceiveProduct()));
 };
 
-export default { fetchProduct };
+export default { fetchProduct, saveProduct };

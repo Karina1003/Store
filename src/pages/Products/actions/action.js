@@ -17,10 +17,6 @@ const getProducts = () => {
         return response;
 };
 
-const deleteProduct = (id) => {
-    fetch(`http://localhost:8080/product/delete/${id}`, {method: "DELETE"});
-};
-
 const fetchProducts = () => (dispatch) => {
     dispatch(requestProducts());
     return getProducts()

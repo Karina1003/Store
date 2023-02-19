@@ -21,17 +21,14 @@ const Products = () => {
     });
 
     useEffect(() => {
-        dispatch(productsActions.fetchProducts());
-    }, []);
-
-    useEffect(() => {
-        setState(prevState => ({
+        dispatch(productsActions.fetchProducts())
+        .then(result => setState(prevState => ({
             ...prevState,
-            list: reducer.list,
+            list: result.products,
             componentDidMount: true,
             isChanged: false,
-        }));
-    }, [state.isChanged]);
+        })));
+    }, []);
 
     const deleteProductById = (id) => {
         dispatch(productsActions.fetchDeleteProducts(id))
