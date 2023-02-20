@@ -30,6 +30,14 @@ const Products = () => {
         })));
     }, []);
 
+    useEffect(() => {
+        setState(prevState => ({
+            ...prevState,
+            list: reducer.list,
+            isChanged: false,
+        }));
+    }, [state.isChanged]);
+
     const deleteProductById = (id) => {
         dispatch(productsActions.fetchDeleteProducts(id))
         .then(result => dispatch(productsActions.fetchProducts())
