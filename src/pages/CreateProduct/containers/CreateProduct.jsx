@@ -4,9 +4,12 @@ import MenuItem from '@material-ui/core/MenuItem';
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import useChangePage from 'hooks/useChangePage';
+import useLocationSearch from 'hooks/useLocationSearch';
 import productActions from '../actions/action';
 import Button from '@material-ui/core/Button';
 import Link from 'components/Link';
+import * as PAGES from 'constants/pages';
 
 const CreateProduct = () => {
 
@@ -19,6 +22,7 @@ const CreateProduct = () => {
     const [state, setState] = useState({
         product: {},
         componentDidMount: false,
+        isSuccess: false,
     });
 
     const [saveParams, setSaveParams] = useState({
@@ -49,11 +53,23 @@ const CreateProduct = () => {
     }, []);
 
     const saveProduct = (name, description, categoryId) => {
-        dispatch(productActions.saveProduct(name, description, categoryId));
+        dispatch(productActions.saveProduct(name, description, categoryId))
+        .then(result => {
+            setState(prevState => ({
+                ...prevState,
+                isSuccess: true,
+            }));
+        });
     };
 
     const updateProduct = (id, name, description, categoryId) => {
-        dispatch(productActions.updateProduct(id, name, description, categoryId));
+        dispatch(productActions.updateProduct(id, name, description, categoryId))
+        .then(result => {
+            setState(prevState => ({
+                ...prevState,
+                isSuccess: true,
+            }));
+        });
     };
 
     const handleChangeName = event => {
@@ -77,6 +93,18 @@ const CreateProduct = () => {
         }));
     };
 
+    const locationSearch = useLocationSearch();
+    const changePage = useChangePage();
+    useEffect(() => {
+        if (state.isSuccess) {
+            changePage({
+                locationSearch: locationSearch.redirectLocationSearch
+                ? JSON.parse(locationSearch.redirectLocationSearch)
+                : locationSearch,
+                path: locationSearch.redirectPathname || `/${PAGES.PRODUCTS}`,
+            });
+        }
+    }, [state.isSuccess]);
 
     return(
         <div>
