@@ -29,7 +29,15 @@ const CreateProduct = () => {
 
     useEffect(()=>{
         if ([id]!='new') {
-            dispatch(productActions.fetchProduct([id]));
+            dispatch(productActions.fetchProduct([id]))
+            .then(result => {
+                setSaveParams(prevState => ({
+                    ...prevState,
+                    name: result.product.name,
+                    description: result.product.description,
+                    categoryId: result.product.category.id,
+                }))
+            });
         }
     },[]);
 
@@ -41,8 +49,11 @@ const CreateProduct = () => {
     }, []);
 
     const saveProduct = (name, description, categoryId) => {
-        dispatch(productActions.saveProduct(name, description, categoryId))
-        .then(result => console.log(result));
+        dispatch(productActions.saveProduct(name, description, categoryId));
+    };
+
+    const updateProduct = (id, name, description, categoryId) => {
+        dispatch(productActions.updateProduct(id, name, description, categoryId));
     };
 
     const handleChangeName = event => {
@@ -74,22 +85,35 @@ const CreateProduct = () => {
                     <h2>Update product: {id}</h2>
                     <div>
                         Product name:  
-                        <TextField value={reducer.product.name} defaultValue="" 
+                        <TextField value={saveParams.name} defaultValue="" 
                                    onChange={handleChangeName} />       
                     </div>
                     <div>
                         Description:  
-                        <TextField value={reducer.product.description} defaultValue="" 
+                        <TextField value={saveParams.description} defaultValue="" 
                                    onChange={handleChangeDescription} />       
                     </div>
                     <div>
                         Category:
-                        <Select onChange={handleChangeCategory} >
+                        <Select value={saveParams.categoryId} onChange={handleChangeCategory} >
                             <MenuItem value={1}>Tools</MenuItem>
                             <MenuItem value={2}>Furniture</MenuItem>
                             <MenuItem value={3}>Cutlery</MenuItem>    
                         </Select>     
                     </div>
+                    <Link
+                    to={location => ({
+                    ...location,
+                    pathname: `/products`,
+                    })} >
+                        <Button variant="contained" >
+                            Cancel
+                        </Button>
+                    </Link>
+                    <Button variant="contained" onClick={() => 
+                            {updateProduct(id, saveParams.name, saveParams.description, saveParams.categoryId)}}>
+                            Save
+                    </Button>
                 </div>
             )}
 
@@ -112,21 +136,21 @@ const CreateProduct = () => {
                         <MenuItem value={3}>Cutlery</MenuItem>    
                     </Select>        
                 </div>
+                <Link
+                    to={location => ({
+                    ...location,
+                    pathname: `/products`,
+                    })} >
+                        <Button variant="contained" >
+                            Cancel
+                        </Button>
+                    </Link>
+                    <Button variant="contained" onClick={() => 
+                            {saveProduct(saveParams.name, saveParams.description, saveParams.categoryId)}}>
+                            Save
+                    </Button>
             </div>
             )}
-            <Link
-            to={location => ({
-            ...location,
-            pathname: `/products`,
-            })} >
-                <Button variant="contained" >
-                    Cancel
-                </Button>
-            </Link>
-            <Button variant="contained" onClick={() => 
-                    {saveProduct(saveParams.name, saveParams.description, saveParams.categoryId)}}>
-                    Save
-            </Button>
         </div>
     );
 }
